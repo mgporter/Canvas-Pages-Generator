@@ -2,7 +2,7 @@ from typing import cast
 from PyQt6.QtGui import *
 from PyQt6.QtWidgets import *
 from PyQt6.QtCore import * # type: ignore
-from canvasapi import Canvas # type: ignore
+from canvasapi.exceptions import CanvasException # type: ignore
 from canvas_pages_generator.core.Dependencies import Dependencies
 from canvas_pages_generator.core.Utils import getLastTwoDigitsOfYear
 from canvas_pages_generator.services.ApiService import ApiService
@@ -36,9 +36,7 @@ class MainWindow(QMainWindow):
 
 
   def refreshWindow(self) -> None:
-    print("refresh window")
     if self.api.isConnected():
-      # self.removeAllCourseTabs()
       self.createCourseTabs()
     else:
       self.createConnectionMessage()
@@ -56,7 +54,6 @@ class MainWindow(QMainWindow):
       connection_action = ConnectAction(self)
       connection_action.signals.refresh_signal.connect(self.refreshWindow)
       connection_menu.addAction(connection_action)
-      # connection_menu.addAction(ConnectAction(self))
 
     if course_settings is not None:
       course_settings.addAction(CourseSettingsAction(self))
@@ -76,9 +73,14 @@ class MainWindow(QMainWindow):
     year = Dependencies.config.settings["current_year"]
     month = Dependencies.config.settings["current_month"]
 
-    for course in courses:
-      course = cast(Course, course)
-      self.tabs.addTab(CourseTab(course, year, month, self), f"{course.name} ({year}-{getLastTwoDigitsOfYear(year + 1)})")
+    try:
+      for course in courses:
+        course = cast(Course, course)
+        self.tabs.addTab(CourseTab(course, year, month, self), f"{course.name} ({year}-{getLastTwoDigitsOfYear(year + 1)})")
+    except CanvasException as e:
+      print(e.message)
+      self.createConnectionMessage()
+      return
 
     self.setCentralWidget(self.tabs)
 
@@ -92,7 +94,6 @@ class MainWindow(QMainWindow):
     self.setCentralWidget(message)
 
   def removeAllCourseTabs(self) -> None:
-    print(self.tabs.count())
     for i in range(self.tabs.count()):
       self.tabs.removeTab(i)
 

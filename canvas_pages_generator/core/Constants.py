@@ -1,4 +1,5 @@
 import os
+from datetime import datetime
 from os import path
 from pathlib import Path
 from typing import List
@@ -9,6 +10,11 @@ from PyQt6 import QtWidgets as qtw
 
 from .CanvasTypes import Grade
 
+current_year = datetime.now().year
+current_month = datetime.now().month
+
+if current_month <= 6:
+  current_year -= 1
 
 class Constants:
   DEFAULT_FONT_SIZE: int = 14
@@ -21,7 +27,7 @@ class Constants:
   MEDIA_PREVIEW_SIZE: qtc.QSize = qtc.QSize(600, 500)
   DIALOG_BOX_WIDTH: int = 640
 
-  DEFAULT_API_URL: str = "https://<YOUR ORGANIZATION HERE>.instructure.com/"
+  DEFAULT_API_URL: str = "https://YOUR_ORGANIZATION_HERE.instructure.com/"
   DEFAULT_API_TOKEN: str = "<SEE INSTRUCTIONS BELOW>"
 
   PROJECT_HOME: Path = Path(os.getcwd())
@@ -29,8 +35,8 @@ class Constants:
   DEFAULT_DATABASE_DIRECTORY = path.join(PROJECT_HOME, "database")
   DEFAULT_CONFIG_DIRECTORY = path.join(PROJECT_HOME, "config")
 
-  DEFAULT_YEAR: int = 2023
-  DEFAULT_MONTH: int = 9
+  DEFAULT_YEAR: int = current_year
+  DEFAULT_MONTH: int = current_month
   DEFAULT_GRADES: List[Grade] = ["PreK", "K", "G1", "G2", "G3", "G4"]
   SUPPORTED_GRADES: List[Grade] = ["PreK", "K", "G1", "G2", "G3", "G4", "G5", "G6", "G7", "G8", "G9", "G10", "G11", "G12"]
   SUPPORTED_IMAGE_TYPES: List[str] = [".jpg", ".png", ".jpeg", ".bmp", ".gif", ".svg"]

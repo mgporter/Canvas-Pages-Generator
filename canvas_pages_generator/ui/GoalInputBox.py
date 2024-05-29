@@ -11,8 +11,6 @@ class GoalInputBox(QWidget):
   def __init__(self, id: int, text: str, onInputChange: Any, onRemove: Any, parent=None) -> None:
     super().__init__(parent)
 
-    print(id, text, parent)
-
     self.id = id
 
     hBox = QHBoxLayout(self)

@@ -12,7 +12,6 @@ from canvas_pages_generator.core.CanvasTypes import Grade
 from canvas_pages_generator.services.DatabaseService import DatabaseService
 import pandas as pd
 
-
 class SqliteRepository:
 
   databaseService: DatabaseService
@@ -392,7 +391,7 @@ class SqliteRepository:
 
     cy_data = [
       (1, 845, "G4", 2023),
-      (2, 845, "G2", 2023),
+      (2, 845, "K", 2023),
     ]
 
     # id, course_id, grade, year
@@ -403,27 +402,57 @@ class SqliteRepository:
 
     self.conn.commit()
 
-    # id, cy_id, page_id, month, description
+    # cy_id, page_id, month, description
     goal_data = [
-      (1, None, 5, "test goal 1"),
-      (1, None, 5, "test goal 2"),
-      (1, None, 5, "test goal 3"),
-      (1, None, 6, "test goal 4"),
-      (1, None, 6, "test goal 5"),
-      (1, None, 7, "test goal 6"),
-      (1, None, 7, "test goal 7"),
-      (1, None, 7, "test goal 8"),
-      (1, None, 7, "test goal 9"),
-      (1, None, 9, "test goal 1"),
-      (1, None, 9, "test goal 2"),
-      (1, None, 9, "test goal 3"),
-      (1, None, 9, "test goal 4"),
-      (2, None, 10, "test goal 2"),
-      (2, None, 10, "test goal 3"),
-      (2, None, 10, "test goal 4"),
-      (2, None, 1, "test goal 5"),
-      (2, None, 1, "test goal 6"),
-      (2, None, 2, "test goal 7"),
+      (1, None, 10, "Maintain the music classroom routines."),
+      (1, None, 10, "Continue to strengthen friendly relationships through group dances and music games."),
+      (1, None, 10, "Read and notate in stick notation."),
+      (1, None, 10, "Review the note names they've learned through singing, spelling games, and keyboard playing on treble staff notation."),
+      (1, None, 10, "Learn the basic skills of playing the ukulele. Use the ukulele to play songs including 2 chords."),
+      (1, None, 10, "Learn various seasonal songs."),
+
+      (1, None, 11, "Maintain the music classroom routines."),
+      (1, None, 11, "Develop basic skills in ukulele playing."),
+      (1, None, 11, "Learn the basic chord patterns by playing the ukulele."),
+      (1, None, 11, "Continue to maintain the singing voice."),
+      (1, None, 11, "Learn various seasonal songs."),
+      (1, None, 11, "Get ready for the winter concert."),
+
+      (1, None, 12, "Get ready for the winter concert."),
+      (1, None, 12, "Continue to develop basic skills in ukulele playing."),
+      (1, None, 12, "Continue learning basic chord patterns by playing the ukulele."),
+      (1, None, 12, "Continue to maintain the singing voice."),
+      (1, None, 12, "Learn various seasonal songs."),
+      (1, None, 12, "Get ready for the winter concert."),
+      (1, None, 12, "Evaluate performances and compositions by devising criteria."),
+      (1, None, 12, "Discuss each performance and provide evidence of quality moments, as well as areas in need of improvement."),
+
+      (2, None, 10, "Maintain the music classroom routines."),
+      (2, None, 10, "Feel confident to say one's own name in front of others."),
+      (2, None, 10, "Continue to build friendly relationships through group dances and music games."),
+      (2, None, 10, "Continue to follow the cues of a conductor to sing or play percussion."),
+      (2, None, 10, "Continue to experience the steady beat within a variety of music activities."),
+      (2, None, 10, "Continue to use movement and standard music vocabulary to describe what is heard with active listening."),
+      (2, None, 10, "Learn various seasonal songs and game songs by using different voices while singing, according to the content of the music."),
+      (2, None, 10, "Use different tempos (fast/slow), beats, and dynamics (loud/soft) to accompany familiar simple songs within specified guidelines"),
+
+      (2, None, 11, "Maintain the music classroom routines."),
+      (2, None, 11, "Continue to build friendly relationships through group dances and music games."),
+      (2, None, 11, "Continue to use movement and standard music vocabulary to describe what is heard with active listening."),
+      (2, None, 11, "Continue to use different tempos (fast/slow), beats, and dynamics (loud/soft) to accompany familiar simple songs within specified guidelines."),
+      (2, None, 11, "Follow your own imagination to create lyrics on familiar tunes."),
+      (2, None, 11, "Use different dynamics while singing, in accordance with the music content."),
+      (2, None, 11, "Learn various seasonal songs and game songs by using different voices while singing, in alignment with the content of the music."),
+
+      (2, None, 12, "Maintain music classroom routines."),
+      (2, None, 12, "Continue to use movement and standard music vocabulary to describe what is heard through active listening."),
+      (2, None, 12, "Continue to use different tempos (fast/slow), beats, and dynamics (loud/soft) to accompany familiar simple songs within specified guidelines."),
+      (2, None, 12, "Use suitable dynamics while singing in accordance with the music content."),
+      (2, None, 12, "Learn about pitch (s - m) and rhythm (titi, ta)"),
+      (2, None, 12, "Get ready for the Christmas Chapel Singing."),
+      (2, None, 12, "Gain large-group singing experience."),
+      (2, None, 12, "Evaluate our performances using self-developed criteria."),
+      (2, None, 12, "Discuss each performance and provide evidence of quality moments."),
     ]
 
     cur.executemany(
@@ -435,11 +464,22 @@ class SqliteRepository:
 
     # id, cy_id, page_id, month, description
     activity_data = [
-      (1, 1, None, 9, "test activity 1"),
-      (2, 1, None, 9, "test activity 2"),
-      (3, 2, None, 9, "test activity 5"),
-      (4, 2, None, 9, "test activity 6"),
-      (5, 2, None, 9, "test activity 7"),
+      (1, 1, None, 10, "Music-making teamwork in action! We explored all the possibilities of playing these non-pitched instruments. When different timbres work together, it creates a nice sound."),
+      (2, 1, None, 10, "We created our own story for this song by crafting the lyrics together. We also reviewed general rhythms, such as half notes, quarter notes, eighth notes, and sixteenth notes, from this song."),
+
+      (3, 1, None, 11, "We have finally started to learn the ukulele! We even have an awesome assistant student instructor. The dance in this video was created by Mrs. Song, although we think our version is better."),
+
+      (4, 1, None, 12, "Rehearsal in the bell hall for our winter concert! Ready, go! Hmm... Not sure if we really like this song - \"I'm Getting Nothing for Christmas!\""),
+
+      (5, 2, None, 10, "We are using movement and shakers to imitate the sound of rain while singing the song “Pitter patter."),
+      (6, 2, None, 10, "Students really love this game and song! They even create their own lyrics for this Naughty cat."),
+
+      (7, 2, None, 11, "Instead of using voices, we tried using instruments to start a conversation. We listened to each other and cooperated together."),
+      (8, 2, None, 11, "Our first experience with rhythm score reading! The different sizes of pumpkins represent the length of each note. We attempted to follow the score while maintaining a steady beat at the same time."),
+
+      (9, 2, None, 12, "Ta-tarata~~. We love marching and playing different instruments with the marching song from “The Nutcracker” by Tchaikovsky! Everyone gets a chance to lead the way!"),
+
+
     ]
 
     cur.executemany(
@@ -449,24 +489,24 @@ class SqliteRepository:
 
     self.conn.commit()
 
-    paths = []
-    testFilesDir = makeDirIfNotExists(Constants.TEST_FILES_DIRECTORY)
-    for file in testFilesDir.iterdir():
-      paths.append(file)
+    # paths = []
+    # testFilesDir = makeDirIfNotExists(Constants.TEST_FILES_DIRECTORY)
+    # for file in testFilesDir.iterdir():
+    #   paths.append(file)
 
-    # id, activity_id, path, canvas_id, canvas_uuid, canvas_folder_id, canvas_url, canvas_media_entry_id,
-    media_data = [
-      (1, str(paths[0]), None, None, None, None, None),
-      (1, str(paths[1]), None, None, None, None, None),
-      (2, str(paths[2]), None, None, None, None, None),
-    ]
+    # # id, activity_id, path, canvas_id, canvas_uuid, canvas_folder_id, canvas_url, canvas_media_entry_id,
+    # media_data = [
+    #   (1, str(paths[0]), None, None, None, None, None),
+    #   (1, str(paths[1]), None, None, None, None, None),
+    #   (2, str(paths[2]), None, None, None, None, None),
+    # ]
 
-    cur.executemany(
-      "INSERT INTO media (activity_id, path, canvas_id, canvas_uuid, canvas_folder_id, canvas_url, canvas_media_entry_id) VALUES (?, ?, ?, ?, ?, ?, ?)",
-      media_data
-    )
+    # cur.executemany(
+    #   "INSERT INTO media (activity_id, path, canvas_id, canvas_uuid, canvas_folder_id, canvas_url, canvas_media_entry_id) VALUES (?, ?, ?, ?, ?, ?, ?)",
+    #   media_data
+    # )
 
-    self.conn.commit()
+    # self.conn.commit()
 
 
     cur.close()

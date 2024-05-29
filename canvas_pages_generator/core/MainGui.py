@@ -20,10 +20,6 @@ class MainGui:
       format=loggingFormat
     )
 
-    # logger.info("Starting Api connection")
-    # apiService = Dependencies.apiService
-    # apiService.createConnection()
-
     logger.info("Starting PyQt")
     app = QApplication(sys.argv)
     app.setStyleSheet(StyleSheets.APP)

@@ -24,12 +24,13 @@ class ConnectAction(QAction):
 
     oldToken = Dependencies.config.settings["api_token"]
     oldUrl = Dependencies.config.settings["api_url"]
+    oldConnectionStatus = Dependencies.apiService.isConnected()
 
     connection_dialog = ConnectionDialog()
     connection_dialog.exec()
 
     if (Dependencies.config.settings["api_token"] != oldToken or 
-        Dependencies.config.settings["api_url"] != oldUrl):
+        Dependencies.config.settings["api_url"] != oldUrl or
+        Dependencies.apiService.isConnected() != oldConnectionStatus):
       self.signals.refresh_signal.emit(True)
-      print("signal emitted")
 
