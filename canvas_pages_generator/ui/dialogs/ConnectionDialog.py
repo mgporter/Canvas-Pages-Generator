@@ -1,6 +1,7 @@
 # from PyQt6.QtGui import 
 from PyQt6.QtWidgets import QDialog, QDialogButtonBox, QLabel, QLineEdit, QVBoxLayout, QPushButton
 from PyQt6.QtCore import pyqtSlot
+from canvas_pages_generator.core.Config import Config
 from canvas_pages_generator.core.Dependencies import Dependencies
 from canvas_pages_generator.services.ApiService import ApiService
 from canvas_pages_generator.core.Constants import Constants
@@ -8,6 +9,7 @@ from canvas_pages_generator.core.Constants import Constants
 class ConnectionDialog(QDialog):
 
   api: ApiService
+  config: Config
 
   button_box: QDialogButtonBox
   retry_button: QPushButton
@@ -29,6 +31,7 @@ class ConnectionDialog(QDialog):
     super().__init__(parent)
 
     self.api = Dependencies.apiService
+    self.config = Dependencies.config
 
     self.setWindowTitle("Connection settings")
     self.setFixedWidth(Constants.DIALOG_BOX_WIDTH)
@@ -41,10 +44,10 @@ class ConnectionDialog(QDialog):
 
   def defineLayout(self):
     self.api_url_label = QLabel("API URL")
-    self.api_url_input = QLineEdit(Constants.DEFAULT_API_URL, self)
+    self.api_url_input = QLineEdit(self.config.getSettings()["api_url"], self)
 
     self.api_token_label = QLabel("API TOKEN")
-    self.api_token_input = QLineEdit(Constants.YUTAO_API_TOKEN, self)
+    self.api_token_input = QLineEdit(self.config.getSettings()["api_token"], self)
     self.api_token_input.setContentsMargins(0, 0, 0, 40)
 
     self.connection_status = QLabel(self.CONNECTION_MESSAGE_NOTCONNECTED)
@@ -91,8 +94,9 @@ class ConnectionDialog(QDialog):
   
   def retryConnection(self):
     self.connection_status.setText("Connecting...")
-    Constants.DEFAULT_API_URL = self.api_url_input.text()
-    Constants.DEFAULT_API_TOKEN = self.api_token_input.text()
+
+    self.config.saveSetting("api_url", self.api_url_input.text())
+    self.config.saveSetting("api_token", self.api_token_input.text())
 
     self.api.createConnection()
       

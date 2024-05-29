@@ -35,9 +35,9 @@ class CourseSettingsAction(QAction):
         oldSettings["current_month"] != dialog.selectedMonth or
         oldSettings["grades"] != dialog.selectedGrades
       ):
-        Dependencies.config.saveValue("current_year", dialog.selectedYear)
-        Dependencies.config.saveValue("current_month", dialog.selectedMonth)
-        Dependencies.config.saveValue("grades", dialog.selectedGrades)
+        Dependencies.config.saveSetting("current_year", dialog.selectedYear)
+        Dependencies.config.saveSetting("current_month", dialog.selectedMonth)
+        Dependencies.config.saveSetting("grades", dialog.selectedGrades)
 
         self.mainWindow.remakeCourseTabs()
 

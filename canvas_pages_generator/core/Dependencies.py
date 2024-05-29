@@ -5,7 +5,8 @@ from canvas_pages_generator.services.SqliteRepository import SqliteRepository
 
 class Dependencies:
 
-  apiService: ApiService = ApiService()
-  databaseService: DatabaseService = DatabaseService()
-  repository: SqliteRepository = SqliteRepository(databaseService)
   config: Config = Config()
+  apiService: ApiService = ApiService(config)
+  databaseService: DatabaseService = DatabaseService(config)
+  repository: SqliteRepository = SqliteRepository(databaseService)
+  

@@ -4,6 +4,7 @@ from typing import List, Optional
 import logging
 
 from canvas_pages_generator.core.Constants import Constants
+from canvas_pages_generator.core.Utils import makeDirIfNotExists
 logger = logging.getLogger(__name__)
 
 from pandas import DataFrame
@@ -25,8 +26,7 @@ class SqliteRepository:
     self.conn = self.databaseService.getConnection()
 
     # self.dropOldTables()
-    if self.databaseService.isNewDatabase:
-      self.createTables()
+    self.createTables()
     # self.insertTestData()
 
   def dropOldTables(self) -> None:
@@ -52,7 +52,7 @@ class SqliteRepository:
       );""")
 
     cur.execute(
-      """CREATE TABLE page(
+      """CREATE TABLE IF NOT EXISTS page(
         id INTEGER NOT NULL PRIMARY KEY, 
         canvas_id INTEGER,
         cy_id INTEGER,
@@ -62,7 +62,7 @@ class SqliteRepository:
       );""")
     
     cur.execute(
-      """CREATE TABLE goal(
+      """CREATE TABLE IF NOT EXISTS goal(
         id INTEGER NOT NULL PRIMARY KEY, 
         cy_id INTEGER,
         page_id INTEGER,
@@ -72,7 +72,7 @@ class SqliteRepository:
       );""")
     
     cur.execute(
-      """CREATE TABLE activity(
+      """CREATE TABLE IF NOT EXISTS activity(
         id INTEGER NOT NULL PRIMARY KEY, 
         cy_id INTEGER,
         page_id INTEGER,
@@ -82,7 +82,7 @@ class SqliteRepository:
       );""")
     
     cur.execute(
-      """CREATE TABLE media(
+      """CREATE TABLE IF NOT EXISTS media(
         id INTEGER NOT NULL PRIMARY KEY, 
         activity_id INTEGER, 
         path TEXT,
@@ -450,7 +450,8 @@ class SqliteRepository:
     self.conn.commit()
 
     paths = []
-    for file in Constants.FILES_DIRECTORY.iterdir():
+    testFilesDir = makeDirIfNotExists(Constants.TEST_FILES_DIRECTORY)
+    for file in testFilesDir.iterdir():
       paths.append(file)
 
     # id, activity_id, path, canvas_id, canvas_uuid, canvas_folder_id, canvas_url, canvas_media_entry_id,

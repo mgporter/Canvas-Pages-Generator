@@ -21,14 +21,13 @@ class Constants:
   MEDIA_PREVIEW_SIZE: qtc.QSize = qtc.QSize(600, 500)
   DIALOG_BOX_WIDTH: int = 640
 
-  DEFAULT_API_URL: str = "https://montgomeryschool.instructure.com/"
-  YUTAO_API_TOKEN: str = "14162~som8NXE370MK0x7g7QlesROizCBHfTmvVBQYZgSGDNRwFerAwGq3H3iLO3yz2DuN"
-  DEFAULT_API_TOKEN: str = "14162~som8NXE370MK0x7g7QlesROizCBHfTmvVBQYZgSGDNRwFerAwGq3H3iLO3yz2DuN"
+  DEFAULT_API_URL: str = "https://<YOUR ORGANIZATION HERE>.instructure.com/"
+  DEFAULT_API_TOKEN: str = "<SEE INSTRUCTIONS BELOW>"
 
   PROJECT_HOME: Path = Path(os.getcwd())
-  FILES_DIRECTORY = Path(path.join(PROJECT_HOME, "files"))
-  DATABASE_DIRECTORY = Path(path.join(PROJECT_HOME, "database"))
-  CONFIG_DIRECTORY = Path(path.join(PROJECT_HOME, "config"))
+  TEST_FILES_DIRECTORY = path.join(PROJECT_HOME, "test_files")
+  DEFAULT_DATABASE_DIRECTORY = path.join(PROJECT_HOME, "database")
+  DEFAULT_CONFIG_DIRECTORY = path.join(PROJECT_HOME, "config")
 
   DEFAULT_YEAR: int = 2023
   DEFAULT_MONTH: int = 9

@@ -1,4 +1,8 @@
 .vscode
+config
+database
+config/
+database/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

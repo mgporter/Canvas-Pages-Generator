@@ -1,8 +1,8 @@
 import logging
 from typing import Optional
 from canvasapi import Canvas # type: ignore
+from canvas_pages_generator.core.Config import Config
 from canvas_pages_generator.services.ApiSignals import ApiSignals
-from canvas_pages_generator.core.Constants import Constants
 from canvasapi.current_user import CurrentUser # type: ignore
 from canvasapi.exceptions import CanvasException # type: ignore
 
@@ -18,30 +18,28 @@ _errors: str = ""
 
 class ApiService():
 
-  # connection_change: pyqtBoundSignal
+  config: Config
 
-  def __init__(self) -> None:
+  def __init__(self, config: Config) -> None:
+    self.config = config
     self.signals = ApiSignals()
 
   def createConnection(self) -> bool:
     global _canvas
 
-    logger.info(f"Connecting to Api with URL {Constants.DEFAULT_API_URL}"
-                f" and Token {Constants.DEFAULT_API_TOKEN}")
+    api_url = self.config.getSettings()["api_url"]
+    api_token = self.config.getSettings()["api_token"]
+
+    logger.info(f"Connecting to Api with URL {api_url}"
+                f" and Token {api_token}")
 
     try:
       self._resetStatus()
-      _canvas = Canvas(
-        Constants.DEFAULT_API_URL, 
-        Constants.DEFAULT_API_TOKEN
-      )
+      _canvas = Canvas(api_url, api_token)
       self.updateConnectedUser()
       return True
     except Exception as e:
-      logger.exception(
-        f"Error connecting to Api with URL {Constants.DEFAULT_API_URL}"
-        f" and Token {Constants.DEFAULT_API_TOKEN}", e
-      )
+      logger.exception(f"Error connecting to Api {e}")
       self._resetStatus()
       self.emitConnectionChangeSignal()
       return False

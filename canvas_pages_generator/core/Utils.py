@@ -38,10 +38,12 @@ def sortGrades(unsorted_grades: List[Grade]) -> List[Grade]:
 
   return output
 
-def makeDirIfNotExists(path: Path) -> bool:
+def makeDirIfNotExists(path: Path | str) -> Path:
   """Returns True if a directory was created."""
-  if not path.exists():
-    os.makedirs(path)
-    return True
+  newPath = Path(path)
+
+  if not newPath.exists():
+    os.makedirs(newPath, exist_ok=True)
+    return newPath
   
-  return False
+  return newPath
