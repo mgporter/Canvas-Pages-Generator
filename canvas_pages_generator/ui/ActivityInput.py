@@ -77,7 +77,7 @@ class ActivityInput(QWidget):
     )
 
   def createInputBox(self, id: int, text: str) -> ActivityInputBox:
-    return ActivityInputBox(self, id, text)
+    return ActivityInputBox(self, id, text, self.removeRow)
 
   def onDescriptionChange(self, id: int, text: str) -> None:
     self.dataModel.updateActivity(id, text)

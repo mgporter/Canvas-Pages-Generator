@@ -52,8 +52,6 @@ class CourseTab(QWidget):
     for grade in grades[::-1]:
       dataModel = DataModel(self.course, grade, self.year, self.month)
 
-      self.uploadWidget.addDataModel(dataModel)
-
       self.tabs.addTab(
         GradeTab(
           dataModel,

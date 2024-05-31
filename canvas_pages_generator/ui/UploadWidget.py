@@ -1,9 +1,14 @@
 from __future__ import annotations
 from pathlib import Path
+import time
 from typing import TYPE_CHECKING
 
+from canvas_pages_generator.core.Constants import Constants
 from canvas_pages_generator.core.Month import MonthHandler
 from canvas_pages_generator.core.PageCreator import PageCreator
+from canvas_pages_generator.core.Utils import nongui
+from canvas_pages_generator.ui.GradeTab import GradeTab
+from canvas_pages_generator.ui.dialogs.UploadStatusDialog import UploadStatusDialog
 if TYPE_CHECKING:
   from canvas_pages_generator.ui.CourseTab import CourseTab
 
@@ -23,7 +28,6 @@ from canvas_pages_generator.core.DataModel import DataModel
 
 class UploadWidget(qtw.QWidget):
   
-  dataModels: List[DataModel]
   uploadService: UploadService
   courseTab: CourseTab
   course: Course
@@ -36,7 +40,6 @@ class UploadWidget(qtw.QWidget):
     super().__init__(courseTab)
 
     self.courseTab = courseTab
-    self.dataModels = []
     self.uploadService = UploadService(course)
 
     self.defineLayout()
@@ -51,11 +54,12 @@ class UploadWidget(qtw.QWidget):
 
     label = qtw.QLabel("Upload course:")
     label.setObjectName("heading")
+    label.setStyleSheet("color: #1c9834;")
 
     self.uploadAllButton = qtw.QPushButton("Upload all pages")
     self.uploadAllButton.clicked.connect(self.onUploadAll)
 
-    self.uploadCurrentButton = qtw.QPushButton("Upload current page")
+    self.uploadCurrentButton = qtw.QPushButton("Create currently open page")
     self.uploadCurrentButton.clicked.connect(self.onUploadCurrent)
 
     hBox.addWidget(label)
@@ -63,25 +67,43 @@ class UploadWidget(qtw.QWidget):
     hBox.addWidget(self.uploadCurrentButton)
     hBox.addStretch(2)
 
-  def addDataModel(self, model: DataModel) -> None:
-    self.dataModels.append(model)
-
   def onUploadAll(self) -> None:
     self.enableUploadButtons(False)
 
-    for model in self.dataModels:
-      logger.info("Processing %s", model.getGrade())
+    modelsToProcess: List[DataModel] = []
+
+    for n in range(self.courseTab.tabs.count()):
+      tab = self.courseTab.tabs.widget(n)
+      if isinstance(tab, GradeTab):
+        modelsToProcess.append(tab.getDataModel())
+
+    statusDialog = UploadStatusDialog(modelsToProcess, self.courseTab)
+    statusDialog.show()
+    statusDialog.activateWindow()
+
+    for i, model in enumerate(modelsToProcess):
+      
+      statusDialog.updateStatus(i, "processing")
+      logger.info("Processing page %s", model.getPagename())
+      qtw.QApplication.processEvents()
+
       self.processData(model)
+
+      statusDialog.updateStatus(i, "done")
+      qtw.QApplication.processEvents()
+
+    statusDialog.close()
 
     self.enableUploadButtons(True)
 
   def processData(self, dataModel: DataModel) -> None:
+    logger.info("Processing %s", dataModel.getGrade())
     self.uploadNewMedia(dataModel)
     page = self.generatePage(dataModel)
     logger.info("Uploading page for %s", dataModel.getGrade())
     pageUploadResponse = self.uploadService.uploadPage(
       page, 
-      f"aa{dataModel.getGrade()}-{MonthHandler.getMonthAbr(dataModel.getMonth())}"
+      dataModel.getPagename()
     )
 
   def generatePage(self, dataModel: DataModel) -> str:
@@ -115,7 +137,14 @@ class UploadWidget(qtw.QWidget):
         )
 
   def onUploadCurrent(self) -> None:
-    pass
+    self.enableUploadButtons(False)
+
+    currentTab = self.courseTab.tabs.currentWidget()
+
+    if isinstance(currentTab, GradeTab):
+      self.processData(currentTab.getDataModel())
+
+    self.enableUploadButtons(True)
 
   def enableUploadButtons(self, enabled: bool) -> None:
     self.uploadAllButton.setEnabled(enabled)

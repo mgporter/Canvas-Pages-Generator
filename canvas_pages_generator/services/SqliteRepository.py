@@ -1,6 +1,6 @@
 
 from sqlite3 import Connection
-from typing import List, Optional
+from typing import List, Optional, cast
 import logging
 
 from canvas_pages_generator.core.Constants import Constants
@@ -25,7 +25,7 @@ class SqliteRepository:
     self.conn = self.databaseService.getConnection()
 
     # self.dropOldTables()
-    self.createTables()
+    # self.createTables()
     # self.insertTestData()
 
   def dropOldTables(self) -> None:
@@ -90,7 +90,7 @@ class SqliteRepository:
         canvas_folder_id INTEGER,
         canvas_url TEXT,
         canvas_media_entry_id TEXT,
-        FOREIGN KEY (activity_id) REFERENCES activity (id)
+        FOREIGN KEY (activity_id) REFERENCES activity (id) ON DELETE CASCADE
       );""")
     
     cur.close()
@@ -156,6 +156,37 @@ class SqliteRepository:
     cur.close()
 
     return id
+  
+  def removeBlankGoals(self, cy_id: int) -> None:
+
+    sql = """
+      SELECT id, description
+      FROM goal
+      WHERE cy_id = ?;"""
+
+    cur = self.conn.cursor()
+    for id, desc in cur.execute(sql, (cy_id,)):
+      desc = cast(str, desc)
+      if len(desc) == 0:
+        self.removeGoal(id)
+
+    cur.close()
+
+  def removeBlankActivities(self, cy_id: int) -> None:
+
+    sql = """
+      SELECT id, description
+      FROM activity
+      WHERE cy_id = ?;"""
+
+    cur = self.conn.cursor()
+    for id, desc in cur.execute(sql, (cy_id,)):
+      desc = cast(str, desc)
+      if len(desc) == 0:
+        self.removeActivity(id)
+
+    cur.close()
+
 
   def getGoals(self, cy_id: int, month: Optional[int] = None) -> DataFrame:
     sql: str
@@ -182,7 +213,7 @@ class SqliteRepository:
     cur = self.conn.cursor()
 
     logger.info("Updating goal with id %d", id)
-    cur.execute(sql, (text, page_id, id))
+    cur.execute(sql, (text.strip(), page_id, id))
 
     self.conn.commit()
 
@@ -206,13 +237,15 @@ class SqliteRepository:
     sql = "INSERT INTO goal (cy_id, page_id, month, description) VALUES (?, ?, ?, ?)"
 
     cur = self.conn.cursor()
-    logger.info("inserting goal with cy_id %d, month %d", cy_id, month)
+
     cur.execute(sql, (cy_id, page_id, month, text))
 
     self.conn.commit()
 
     rowid_res = cur.execute("SELECT last_insert_rowid()")
     id = rowid_res.fetchone()[0]
+
+    logger.info("inserting goal with id %d, cy_id %d, month %d", id, cy_id, month)
 
     cur.close()
 
@@ -242,7 +275,7 @@ class SqliteRepository:
     cur = self.conn.cursor()
 
     logger.info("Updating activity with id %d and text %s", id, text)
-    cur.execute(sql, (text, page_id, id))
+    cur.execute(sql, (text.strip(), page_id, id))
 
     self.conn.commit()
 

@@ -1,30 +1,32 @@
+from os import path
 from typing import Any
-from PyQt6.QtGui import *
-from PyQt6.QtWidgets import *
-from PyQt6.QtCore import * # type: ignore
+from PyQt6 import QtGui as qtg
+from PyQt6 import QtCore as qtc
+from PyQt6 import QtWidgets as qtw
 
-class GoalInputBox(QWidget):
+from canvas_pages_generator.core.Constants import Constants
+from canvas_pages_generator.ui.CloseButton import CloseButton # type: ignore
+
+class GoalInputBox(qtw.QWidget):
 
   id: int
-  lineedit: QLineEdit
+  lineedit: qtw.QLineEdit
 
   def __init__(self, id: int, text: str, onInputChange: Any, onRemove: Any, parent=None) -> None:
     super().__init__(parent)
 
     self.id = id
 
-    hBox = QHBoxLayout(self)
+    hBox = qtw.QHBoxLayout(self)
     hBox.setSpacing(8)
     hBox.setContentsMargins(0,0,0,0)
 
-    self.lineedit = QLineEdit(text, parent)
-    self.lineedit.setSizePolicy(QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.Fixed)
+    self.lineedit = qtw.QLineEdit(text, parent)
+    self.lineedit.setSizePolicy(qtw.QSizePolicy.Policy.MinimumExpanding, qtw.QSizePolicy.Policy.Fixed)
 
     self.lineedit.textChanged.connect(lambda newText: onInputChange(self.id, newText))
 
-    removeButton = QPushButton("×")
-    removeButton.setFixedSize(QSize(26, 26))
-    removeButton.clicked.connect(lambda: onRemove(self))
+    removeButton = CloseButton(lambda: onRemove(self))
 
     hBox.addWidget(self.lineedit)
     hBox.addWidget(removeButton)

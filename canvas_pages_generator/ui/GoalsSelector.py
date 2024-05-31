@@ -51,7 +51,7 @@ class GoalsSelector(QWidget):
     treeWidget.setSelectionMode(QAbstractItemView.SelectionMode.MultiSelection)
 
     for monthNum in MonthHandler.getMonthArray():
-      monthlyData = data[data["month"] == monthNum]
+      monthlyData = data.loc[(data["month"] == monthNum) & (data["description"] != ""), :]
 
       if not monthlyData.empty:
         monthNode = QTreeWidgetItem(treeWidget, [MonthHandler.getMonth(monthNum)])

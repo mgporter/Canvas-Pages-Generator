@@ -1,7 +1,9 @@
 from typing import List, Tuple
 
 from pandas import DataFrame
+from canvas_pages_generator.core.Constants import Constants
 from canvas_pages_generator.core.Dependencies import Dependencies
+from canvas_pages_generator.core.Month import MonthHandler
 from canvas_pages_generator.services.SqliteRepository import SqliteRepository
 from canvas_pages_generator.core.CanvasTypes import Course, Grade
 
@@ -15,11 +17,12 @@ class DataModel:
   grade: Grade
   year: int
   month: int
+  pagename: str
 
   cy_id: int  # courseyear id (sqlite identifier for course, grade, and year)
 
-  goals: DataFrame
-  activities: DataFrame
+  # goals: DataFrame
+  # activities: DataFrame
 
   repo: SqliteRepository = Dependencies.repository
 
@@ -30,6 +33,12 @@ class DataModel:
     self.year = year
     self.month = month
     self.cy_id = self.queryCYID()
+    self.pagename = Constants.PAGE_FILENAME_TEMPLATE.format(
+        grade = self.grade,
+        month = MonthHandler.getMonthAbr(self.month)
+      )
+    
+    self.filterBlanks()
 
   def getYear(self) -> int:
     return self.year
@@ -39,6 +48,9 @@ class DataModel:
   
   def getGrade(self) -> Grade:
     return self.grade
+  
+  def getPagename(self) -> str:
+    return self.pagename
 
   def queryCYID(self) -> int:
     id = self.repo.getCYID(
@@ -59,19 +71,15 @@ class DataModel:
   def getCYID(self) -> int:
     return self.cy_id
   
-  def filterBlanks(self, df: DataFrame) -> DataFrame:
-    """Returns results without blank descriptions and removes blanks
-    from database. The given dataframe MUST have a "description" column."""
-    blanks = df.loc[df["description"] == "", "id"]
-    for id in blanks:
-      self.removeGoal(id)
-    return df.loc[df["description"] != "", :]
+  def filterBlanks(self) -> None:
+    self.repo.removeBlankGoals(self.cy_id)
+    self.repo.removeBlankActivities(self.cy_id)
 
   def getGoalsForCurrentMonth(self) -> DataFrame:
-    return self.filterBlanks(self.repo.getGoals(self.cy_id, self.month))
+    return self.repo.getGoals(self.cy_id, self.month)
   
   def getGoalsForCurrentYear(self) -> DataFrame:
-    return self.filterBlanks(self.repo.getGoals(self.cy_id))
+    return self.repo.getGoals(self.cy_id)
   
   def updateGoal(self, id: int, text: str, page_id: int | None = None) -> None:
     self.repo.updateGoal(id, text, page_id)
@@ -83,10 +91,10 @@ class DataModel:
     return self.repo.insertGoal(self.cy_id, self.month, None, text)
 
   def getActivitiesForCurrentYear(self) -> DataFrame:
-    return self.filterBlanks(self.repo.getActivities(self.cy_id))
+    return self.repo.getActivities(self.cy_id)
   
   def getActivitiesForCurrentMonth(self) -> DataFrame:
-    return self.filterBlanks(self.repo.getActivities(self.cy_id, self.month))
+    return self.repo.getActivities(self.cy_id, self.month)
   
   def updateActivity(self, id: int, text: str, page_id: int | None = None) -> None:
     self.repo.updateActivity(id, text, page_id)

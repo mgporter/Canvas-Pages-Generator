@@ -22,5 +22,8 @@ class DatabaseService:
       path.join(self.database_dir, "database.db")
     )
 
+    # Turn on foreign key support
+    self.conn.execute("PRAGMA foreign_keys = ON;")
+
   def getConnection(self) -> Connection:
     return self.conn

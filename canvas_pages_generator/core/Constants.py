@@ -30,10 +30,13 @@ class Constants:
   DEFAULT_API_URL: str = "https://YOUR_ORGANIZATION_HERE.instructure.com/"
   DEFAULT_API_TOKEN: str = "<SEE INSTRUCTIONS BELOW>"
 
+  PAGE_FILENAME_TEMPLATE: str = "aa{grade}-{month}"
+
   PROJECT_HOME: Path = Path(os.getcwd())
   TEST_FILES_DIRECTORY = path.join(PROJECT_HOME, "test_files")
   DEFAULT_DATABASE_DIRECTORY = path.join(PROJECT_HOME, "database")
   DEFAULT_CONFIG_DIRECTORY = path.join(PROJECT_HOME, "config")
+  RESOURCES_DIRECTORY = path.join(PROJECT_HOME, "resources")
 
   DEFAULT_YEAR: int = current_year
   DEFAULT_MONTH: int = current_month

@@ -10,6 +10,8 @@ from canvas_pages_generator.core.CanvasTypes import Course
 from canvas_pages_generator.ui.CourseTab import CourseTab
 from canvas_pages_generator.ui.actions.ConnectAction import ConnectAction
 from canvas_pages_generator.ui.actions.CourseSettingsAction import CourseSettingsAction
+import logging
+logger = logging.getLogger(__name__)
 
 class MainWindow(QMainWindow):
 
@@ -24,7 +26,6 @@ class MainWindow(QMainWindow):
     self.api = Dependencies.apiService
     self.api.createConnection()
 
-    # self.setMinimumSize(QSize(640, 480))
     self.setWindowTitle(self.WINDOW_TITLE.format(c=""))
 
     self.createMenu()
@@ -78,7 +79,7 @@ class MainWindow(QMainWindow):
         course = cast(Course, course)
         self.tabs.addTab(CourseTab(course, year, month, self), f"{course.name} ({year}-{getLastTwoDigitsOfYear(year + 1)})")
     except CanvasException as e:
-      print(e.message)
+      logger.exception(e)
       self.createConnectionMessage()
       return
 
@@ -89,7 +90,6 @@ class MainWindow(QMainWindow):
   def createConnectionMessage(self) -> None:
     message = QLabel("Could not connect to Canvas. Please set the Canvas URL and TOKEN in the Connections menu.")
     message.setWordWrap(True)
-    # message.setMaximumWidth(500)
     message.setAlignment(Qt.AlignmentFlag.AlignCenter)
     self.setCentralWidget(message)
 
@@ -98,7 +98,6 @@ class MainWindow(QMainWindow):
       self.tabs.removeTab(i)
 
   def remakeCourseTabs(self) -> None:
-    # self.removeAllCourseTabs()
     self.createCourseTabs()
 
   @pyqtSlot(bool)

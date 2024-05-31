@@ -1,5 +1,9 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING
+from os import path
+from typing import TYPE_CHECKING, Self
+
+from canvas_pages_generator.core.Constants import Constants
+from canvas_pages_generator.ui.CloseButton import CloseButton
 if TYPE_CHECKING:
   from canvas_pages_generator.ui.ActivityInput import ActivityInput 
 
@@ -33,6 +37,7 @@ class ActivityInputBox(QWidget):
     activityInput: ActivityInput, 
     id: int, 
     text: str, 
+    onRemove: Callable[[Self], None],
     parent=None
   ) -> None:
     super().__init__(parent)
@@ -40,13 +45,15 @@ class ActivityInputBox(QWidget):
     self.id = id
     self.activityInput = activityInput
     self.dataModel = self.activityInput.getActivitiesArea().getGradeTab().getDataModel()
-    self.vBoxLayout = QVBoxLayout(self)
+    self.vBoxLayout = QVBoxLayout()
 
     lineedit = QLineEdit(text, self)
     lineedit.setSizePolicy(QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.Fixed)
     lineedit.textChanged.connect(
       lambda newText: self.activityInput.onDescriptionChange(self.id, newText)
     )
+
+    self.mainHbox = QHBoxLayout(self)
 
     self.vBoxLayout.addWidget(lineedit)
 
@@ -66,6 +73,12 @@ class ActivityInputBox(QWidget):
     self.mediaHBox.addWidget(self.addMediaButton)
 
     self.vBoxLayout.addLayout(self.mediaHBox)
+
+    self.mainHbox.addLayout(self.vBoxLayout)
+
+    removeButton = CloseButton(lambda: onRemove(self))
+
+    self.mainHbox.addWidget(removeButton)
 
   def initializeMediaBoxes(self, layout: QHBoxLayout) -> None:
     media = self.dataModel.getMediaForActivity(self.id)
